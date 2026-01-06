@@ -19,7 +19,7 @@ pub enum ResourceType {
 
 #[derive(Event)]
 pub struct ResourceEvent {
-    pub r#type: ResourceType,
+    pub resource: ResourceType,
     pub amount: i32,
 }
 
@@ -30,8 +30,38 @@ impl Plugin for ResourcesPlugin{
         app.insert_resource(Resources::default());
         app.add_systems(Update, display_resources);
         app.add_event::<ResourceEvent>();
+        app.add_systems(PostUpdate, resource_event_listener);
     }
 }
+
+
+impl Resources {
+    pub fn apply_event(&mut self, e: &ResourceEvent) {
+            match e.resource {
+                ResourceType::Stone => {
+                    self.stone = Self::apply_amount(self.stone, e.amount);
+                }
+                ResourceType::Wood => {
+                    self.wood = Self::apply_amount(self.wood, e.amount);
+                }
+                ResourceType::Gold=> {
+                    self.wood = Self::apply_amount(self.gold, e.amount);
+                }
+            }
+    }
+
+    fn apply_amount(current: u32, delta: i32) -> u32 {
+        if delta >= 0 {
+            current.saturating_add(delta as u32)
+        } else {
+            current.saturating_sub(-(delta) as u32)
+        }
+    }
+}
+
+
+
+
 fn display_resources(mut commands: Commands, res: Res<Resources>, query: Query<(Entity, &ResourceDisplay)>){
     //clear text
     for (entity, _) in query.iter(){
@@ -52,4 +82,9 @@ fn display_resources(mut commands: Commands, res: Res<Resources>, query: Query<(
     ));
 }
 
+fn resource_event_listener(mut res: ResMut<Resources>, mut events: EventReader<ResourceEvent>) {
+    for e in events.read() {
+        res.apply_event(e);    
+    } 
+}
 

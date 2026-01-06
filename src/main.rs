@@ -2,6 +2,8 @@ mod resources;
 mod stones;
 mod background;
 mod tooltips;
+mod dwarf;
+mod userinterface;
 
 use bevy::prelude::*;
 use bevy::window::WindowResolution;
@@ -13,6 +15,8 @@ use stones::StonesPlugin;
 use resources::ResourcesPlugin;
 use background::BackgroundPlugin;
 use tooltips::TooltipsPlugin;
+use dwarf::DwarfPlugin;
+use userinterface::UIPlugin;
 
 
 //Resolution: 640x360 (or 320x180) scales evenly for all common* (?) screen resolution 
@@ -38,6 +42,8 @@ fn main() {
         .add_plugins(StonesPlugin)
         .add_plugins(BackgroundPlugin)
         .add_plugins(TooltipsPlugin)
+        .add_plugins(DwarfPlugin)
+        .add_plugins(UIPlugin)
         .run();
 
 }
@@ -53,3 +59,6 @@ fn setup_camera(mut commands: Commands) {
         ..default()
     }));
 }
+
+
+

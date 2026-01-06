@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::resources::Resources;
+use crate::resources::{ResourceEvent, ResourceType};
 use crate::tooltips::HitsplatEvent;
 
 #[derive(Component)]
@@ -31,16 +31,14 @@ struct ScrollingText{
     timer: Timer,
 }
 
-fn onclick_give_stone(_click: Trigger<Pointer<Click>>, mut resources: ResMut<Resources>, mut my_events: EventWriter<HitsplatEvent>) {
+fn onclick_give_stone(_click: Trigger<Pointer<Click>>, mut hs_event: EventWriter<HitsplatEvent>, mut res_event: EventWriter<ResourceEvent>) {
     let stone_added = calculate_player_stone_generated();
   
     let swing = 50.;
     let rand_x: f32 = rand::random_range(-swing..=swing);
     let hitsplat_text = format!("+{:?}", stone_added);
-    my_events.send(HitsplatEvent { text: hitsplat_text ,x: rand_x, y: 0. });
-//    my_events.send(ResourceEvent {resource: Resource::Stone , amount:});
-    
-    resources.stone += stone_added;
+    hs_event.write(HitsplatEvent { text: hitsplat_text ,x: rand_x, y: 0. });
+    res_event.write(ResourceEvent {resource: ResourceType::Stone , amount: stone_added});
 }
 
 
@@ -57,7 +55,7 @@ fn cleanup_texts(mut commands: Commands, time: Res<Time>, mut query: Query<(Enti
 }
 
 
-fn calculate_player_stone_generated() -> u32 {
+fn calculate_player_stone_generated() -> i32 {
     let multiplier = 4;
     1*multiplier
 }
