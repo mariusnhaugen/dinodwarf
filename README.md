@@ -4,3 +4,5 @@
 
 
 A quick, currently (very) barebones, incremental game written in Rust using the Bevy Engine.
+
+The keen eyed reader might recognize an astounding lack of artistic skills and dinosaurs
